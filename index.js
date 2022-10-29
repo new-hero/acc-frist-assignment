@@ -27,14 +27,26 @@ const server = http.createServer((req, res) => {
             photoUrl: req.headers.photourl
         }
         users.push(newUser)
-        res.write(JSON.stringify(newUser))
-        res.end()
+        const newUsers = [...users]
+       
+        const newUserArray = JSON.stringify(newUsers)
+        
+
+        fs.writeFile('users.json', newUserArray, (err) => {
+            if (err) {
+                res.write("fail to  add user")
+                res.end()
+            } 
+        })
+        res.end("successfully add user")
+
+
     }
     const handleUpdateUser = () => {
         const id = req.headers.id;
         const result = users.find(user => user.id == id)
         const remainingUser = users.filter(user => user.id !== result.id)
-        
+
         const UpdatedUser = {
             id: id,
             name: req.headers.name,
@@ -48,18 +60,18 @@ const server = http.createServer((req, res) => {
 
         res.end()
     }
-    const handleDeleteUser=()=>{
+    const handleDeleteUser = () => {
         const id = req.headers.id;
         const result = users.find(user => user.id == id)
         const remainingUser = users.filter(user => user.id !== result.id)
-        users= [...remainingUser]
+        users = [...remainingUser]
         res.end(`user delete successful id no is ${id}`)
     }
 
-    const handleRandomUser =()=>{
-        let x = Math.floor((Math.random() * users.length) );
-        let randomUser=users[x]
-        
+    const handleRandomUser = () => {
+        let x = Math.floor((Math.random() * users.length));
+        let randomUser = users[x]
+
         res.end(JSON.stringify(randomUser))
     }
 
